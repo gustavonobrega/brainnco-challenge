@@ -1,0 +1,7 @@
+  query GetLotteryContestById ($id: ID!) {
+    concurso (id: $id) {
+      id
+      numeros
+      data
+    }
+  }

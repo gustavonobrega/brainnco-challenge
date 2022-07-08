@@ -1,0 +1,10 @@
+  query getLotteries {
+    loterias {
+      id
+      nome
+    },
+    loteriasConcursos {
+      loteriaId
+      concursoId
+    }
+  }
