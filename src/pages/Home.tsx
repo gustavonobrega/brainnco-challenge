@@ -1,28 +1,11 @@
-import { gql, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { LotteryResults } from "../components/LotteryResults";
 import { Sidebar } from "../components/Sidebar"
-
-const GET_LOTTERY_CONTEST_QUERY = gql`
-  query GetLotteryContest ($id: ID!) {
-    concurso (id: $id) {
-      id
-      numeros
-      data
-    }
-  }`;
-
-interface GetLotteryContestResponse {
-  concurso: {
-    id: string;
-    numeros: String[];
-    data: Date; 
-  }
-}
+import { useGetLotteryContestByIdQuery } from '../graphql/generated';
 
 export function Home() {
-  const [lotteryContest, setLotteryContest] = useState<String>("2359");
-  const { data, loading } = useQuery<GetLotteryContestResponse>(GET_LOTTERY_CONTEST_QUERY, {
+  const [lotteryContest, setLotteryContest] = useState("2359");
+  const { data, loading} = useGetLotteryContestByIdQuery({
     variables: {
       id: lotteryContest
     }
@@ -30,8 +13,8 @@ export function Home() {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar changeLotteryContest={setLotteryContest} lotteryContest={{ id: data?.concurso.id, date: data?.concurso.data}} />
-      <LotteryResults results={data?.concurso.numeros} loading={loading}/>
+      <Sidebar changeLotteryContest={setLotteryContest} lotteryContest={{ id: data?.concurso?.id, date: data?.concurso?.data}} />
+      <LotteryResults results={data?.concurso?.numeros} loading={loading}/>
     </div>
-  );
+  )
 }

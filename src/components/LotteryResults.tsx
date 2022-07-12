@@ -1,10 +1,10 @@
 
 interface LotteryResultsProps {
-    results?: String[];
+    results?: Array<string | null> | null;
     loading?: boolean;
 }
 
-export function LotteryResults({ results, loading }: LotteryResultsProps) {
+export function LotteryResults({ results, loading}: LotteryResultsProps) {
 
   if (loading) {
     return (

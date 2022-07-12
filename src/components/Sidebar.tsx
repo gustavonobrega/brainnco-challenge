@@ -1,51 +1,26 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import classNames from 'classnames';
-import { gql,useQuery } from '@apollo/client';
-
-const GET_LOTTERIES_QUERY = gql`
-  query getLotteries {
-    loterias {
-      id
-      nome
-    },
-    loteriasConcursos {
-      loteriaId
-      concursoId
-    }
-  }
-`;
-
-interface GetLotteriesResponse {
-  loterias: {
-    id: number;
-    nome: string;
-  }[],
-  loteriasConcursos: {
-    loteriaId: number;
-    concursoId: string;
-  }[],
-}
+import { useGetLotteriesQuery } from '../graphql/generated';
 
 interface SidebarProps  {
-  changeLotteryContest: (concursoId: String) => void;
+  changeLotteryContest: (concursoId: string) => void;
   lotteryContest: {
-    id?: string;
-    date?: Date;
+    id?: string | null;
+    date?: string | null;
   }
 }
 
 export function Sidebar({ changeLotteryContest, lotteryContest }: SidebarProps) {
-  const { data, loading } = useQuery<GetLotteriesResponse>(GET_LOTTERIES_QUERY);
+  const { data, loading } = useGetLotteriesQuery();
   const [selectedLottery, setSelectedLottery] = useState('mega-sena');
 
-
   useEffect(() => {
-    const findLotteryId = data?.loterias.find(lottery => lottery.nome === selectedLottery);
+    const findLotteryId = data?.loterias?.find(lottery => lottery?.nome === selectedLottery);
 
-    const findContestId = data?.loteriasConcursos.find(contest => contest.loteriaId === findLotteryId?.id);
+    const findContestId = data?.loteriasConcursos?.find(contest => contest?.loteriaId === findLotteryId?.id);
 
-    if (findContestId) {
+    if (findContestId && findContestId.concursoId) {
       changeLotteryContest(findContestId.concursoId);
     }
 
@@ -91,10 +66,10 @@ export function Sidebar({ changeLotteryContest, lotteryContest }: SidebarProps) 
           leaveTo="opacity-0" 
         >
           <Listbox.Options className="absolute mt-[3rem] w-[215px] overflow-auto rounded-b-md bg-white py-1 font-medium text-gray-dark text-[0.938rem] shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none">
-            {data?.loterias.map(lottery => (
+            {data?.loterias?.map(lottery => (
               <Listbox.Option 
-                key={lottery.id} 
-                value={lottery.nome}
+                key={lottery?.id} 
+                value={lottery?.nome}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 
                   ${active ? 'bg-gray-light text-black' : 'text-gray-dark'}`
@@ -107,7 +82,7 @@ export function Sidebar({ changeLotteryContest, lotteryContest }: SidebarProps) 
                         selected ? 'font-medium' : 'font-normal'
                       }`}
                     >
-                      {lottery.nome}
+                      {lottery?.nome}
                     </span>
                     {selected ? (
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-black">
@@ -129,7 +104,9 @@ export function Sidebar({ changeLotteryContest, lotteryContest }: SidebarProps) 
 
       <div>
         <span className="block text-sm text-white font-medium mb-[0.875rem] tracking-widest uppercase">Concurso</span>
-        <span className="block text-[1.25rem] leading-6 text-white font-bold">{`${lotteryContest?.id} - ${formatDate}`}</span>
+        {lotteryContest.id && lotteryContest.date ? (
+          <span className="block text-[1.25rem] leading-6 text-white font-bold">{`${lotteryContest.id} - ${formatDate}`}</span>
+        ) : ''}
       </div>
     </aside>
   );
