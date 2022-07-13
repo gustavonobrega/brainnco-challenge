@@ -12,7 +12,7 @@ export function Home() {
   });
 
   return (
-    <div className="flex min-h-screen">
+    <div className="min-h-screen bg-gray-light lg:flex">
       <Sidebar changeLotteryContest={setLotteryContest} lotteryContest={{ id: data?.concurso?.id, date: data?.concurso?.data}} />
       <LotteryResults results={data?.concurso?.numeros} loading={loading}/>
     </div>

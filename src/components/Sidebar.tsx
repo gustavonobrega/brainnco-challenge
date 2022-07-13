@@ -37,14 +37,14 @@ export function Sidebar({ changeLotteryContest, lotteryContest }: SidebarProps) 
  
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-[613px] text-gray-dark ">
+      <div className="flex justify-center text-gray-dark pt-20 lg:items-center lg:w-[613px] lg:pt-0">
         <p className="text-3xl">Carregando...</p>
       </div>
     )
   }
 
   return (
-    <aside className={classNames('flex flex-col justify-between px-24 py-[5.75rem] w-[613px]', {
+    <aside className={classNames('w-screen h-[28.125rem] p-14 flex flex-col justify-between items-center lg:items-start lg:px-24 lg:py-[5.75rem] lg:w-[613px] lg:h-screen', {
       'bg-mega-sena': selectedLottery === 'mega-sena',
       'bg-quina': selectedLottery === 'quina',
       'bg-loto-facil': selectedLottery === 'lotofácil', 
@@ -105,7 +105,7 @@ export function Sidebar({ changeLotteryContest, lotteryContest }: SidebarProps) 
       <div>
         <span className="block text-sm text-white font-medium mb-[0.875rem] tracking-widest uppercase">Concurso</span>
         {lotteryContest.id && lotteryContest.date ? (
-          <span className="block text-[1.25rem] leading-6 text-white font-bold">{`${lotteryContest.id} - ${formatDate}`}</span>
+          <span className="text-lg text-white font-bold lg:text-[1.25rem] lg:leading-6">{`${lotteryContest.id} - ${formatDate}`}</span>
         ) : ''}
       </div>
     </aside>
